@@ -1,2 +1,3 @@
+mod math;
 mod latex;
-mod latex_scanner;
+mod commands;
