@@ -1,4 +1,4 @@
-
+use super::math::num::Number;
 pub fn sin(n: Number) -> Number {
 	unimplemented!()
 }

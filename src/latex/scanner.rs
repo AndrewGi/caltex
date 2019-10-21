@@ -1,8 +1,9 @@
 use std::ops::Range;
 use std::iter::Scan;
+use std::str::Chars;
 
 pub struct Scanner<'a> {
-    input: &'a str,
+    chars: Chars<'a>,
 }
 
 pub struct Text<'a>(&'a str);
@@ -11,44 +12,75 @@ pub struct Argument<'a>(Token<'a>);
 pub struct Command<'a> {
     command: &'a str,
     subscript: Token<'a>,
-    arguments: Vec<Argment<'a>>
+    arguments: Vec<Argument<'a>>
+}
+pub struct Operator(char);
+pub struct Subscript<'a> {
+    parent: Token<'a>,
+    script: Token<'a>
+}
+pub struct Superscript<'a> {
+    parent: Token<'a>,
+    script: Token<'a>
 }
 pub enum Token<'a> {
+    Subscript(),
     Text(Text<'a>),
-    Optional(Optional),
 }
-impl<'a> std::ops::Index<Range<usize>> for Scanner<'a> {
-    type Output = Option<Scanner<'a>>;
-
-    fn index(&self, index: Range<usize>) -> &Self::Output {
-        if self.range().contains(&index.end) && self.range().contains(&index.start) {
-            Some(Scanner { self.input[]})
+impl Operator {
+    pub fn is_operator(c: char) -> bool {
+        match c {
+            '+' | '-' | '/' | '*' | '|' | '&' | '%' => true,
+            _ => false
         }
     }
 }
 impl Scanner {
     pub fn peek(&self) -> Option<char> {
-        if self.pos == self.input.len() {
-            None
-        } else {
-            input[self.pos]
-        }
+        self.chars.clone().next()
     }
     pub fn next(&mut self) -> Option<char> {
-        if Some(c) = self.peek() {
-            self.pos += 1;
-            Some(c)
-        } else {
-            None
+        self.chars.next()
+    }
+    pub fn eat_whitespace(&mut self) {
+        while self.peek().unwrap_or('_').is_whitespace() {
+            self.next()
         }
     }
-    pub fn range(&self) -> Range<usize> {
-        0 .. self.pos
+    pub fn len(&self) -> usize {
+        self.chars.as_str().len()
     }
 }
 
 impl<'a> Scanner<'a> {
-    pub fn next_group(&mut self) -> Option<Group<'a>> {
+    pub fn next_token(&mut self) -> Option<Token<'a>> {
 
+    }
+    pub fn next_text(&mut self) -> Option<Text<'a>> {
+        let start = self.chars.as_str();
+        let mut size = 0;
+        while self.peek().unwrap_or(' ').is_alphabetic() {
+            size+=self.next().unwrap().len_utf8();
+        }
+        Some(Text(&start[..size]))
+    }
+    pub fn next_command(&mut self) -> Option<Command<'a>> {
+        if self.peek()? != '\\' {
+            // Missing start '\' before command.
+            return None
+        }
+        // Capture the slash.
+        self.next().unwrap();
+        let command_name = self.next_text()?.0;
+        if self.peek()? == '[' {
+            // There are options.
+        }
+        let arguments = vec![];
+        while self.peek()? == '{' {
+            arguments.push(Argument(self.next_group(('{','}'))?));
+        }
+    }
+    pub fn next_group(&mut self, delimiters: Option<(char, char)>) -> Option<Group<'a>> {
+        if self.peek()?
     }
 }
