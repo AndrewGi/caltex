@@ -1,4 +1,4 @@
-# caltext
+# caltex
 Rust LaTeX calculator for solving and computing LaTeX (and other schema) math problems
 
 Planned Supported Command:
