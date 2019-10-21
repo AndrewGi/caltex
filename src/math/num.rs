@@ -1,63 +1,69 @@
-use frac::Frac;
-#[derive(Copy, Clone)]
-pub enum Number {
-	Float(f64),
-	Int(i64),
+
+use std::ops::*;
+use std::intrinsics::powf64;
+
+pub trait Number: Add + Sub + Mul + Div + Neg {
+
 }
-impl Into<f64> for Number {
-	fn into(self) -> f64 {
-		match *self {
-			Number::Float(f) => f,
-			Number::Int(i) => i.into()
-		}
+pub struct Float(f64);
+pub struct Integer(i64);
+impl Number for Float {}
+impl Number for Integer {}
+pub trait Zero: Number {
+	fn zero() -> Self;
+}
+impl Zero for Float {
+	fn zero() -> Self {
+		Float(0f64)
 	}
 }
-impl Default for Number {
-	fn default() -> Self {
-		Number::Int(0)
+impl Zero for Integer {
+	fn zero() -> Self {
+		Integer(0i64)
 	}
 }
-
-impl std::ops::Add for Number {
-	type Output = Number;
-
-	fn add(self, rhs: Self) -> Self::Output {
-		match (*self, rhs) {
-			(Number::Int(a), Number::Int(b)) => Number::Int(a+b),
-			_ => Number::Float(f64::from(self) + f64::from(rhs))
-		}
-	}
+pub trait One: Number {
+	fn one() -> Self;
 }
 
-impl std::ops::Sub for Number {
-	type Output = Number;
-
-	fn sub(self, rhs: Self) -> Self::Output {
-		match (*self, rhs) {
-			(Number::Int(a), Number::Int(b)) => Number::Int(a - b),
-			_ => Number::Float(f64::from(self) - f64::from(rhs))
-		}
+impl One for Float {
+	fn one() -> Self {
+		Float(1f64)
 	}
 }
-
-impl std::ops::Mul for Number {
-	type Output = Number;
-
-	fn mul(self, rhs: Self) -> Self::Output {
-		match (*self, rhs) {
-			(Number::Int(a), Number::Int(b)) => Number::Int(a*b),
-			_ => Number::Float(f64::from(self) * f64::from(rhs))
-		}
+impl One for Integer {
+	fn one() -> Self {
+		Integer(1i64)
 	}
 }
+pub trait Trig: Number {
+	fn sin(self) -> Self;
+	fn cos(self) -> Self;
+	fn tan(self) -> Self;
+}
+impl Trig for Float {
+	fn sin(self) -> Self {
+		Float(self.0.sin())
+	}
 
-impl std::ops::Div for Number {
-	type Output = Number;
+	fn cos(self) -> Self {
+		Float(self.0.cos())
+	}
 
-	fn div(self, rhs: Self) -> Self::Output {
-		match (*self, rhs) {
-			(Number::Int(a), Number::Int(b)) => Number::Int(a/b),
-			_ => Number::Float(f64::from(self) / f64::from(rhs))
-		}
+	fn tan(self) -> Self {
+		Float(self.0.tan())
+	}
+}
+pub trait Pow: Number {
+	fn pow(self, power: Self) -> Self;
+}
+impl Pow for Float {
+	fn pow(self, power: Self) -> Self {
+		Float(self.0.powf(power.0))
+	}
+}
+impl Pow for Integer {
+	fn pow(self, power: Self) -> Self {
+		Integer(self.0.pow(power.0))
 	}
 }

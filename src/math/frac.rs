@@ -14,7 +14,7 @@ impl Frac {
 }
 impl Into<Frac> for i64 {
 	fn into(self) -> Frac {
-		Frac(Box::new(num::Number::Int(self)), Box::new(num::Number::Int(1i64)))
+		Frac(Box::new(num::BasicNumber::Int(self)), Box::new(num::BasicNumber::Int(1i64)))
 	}
 }
 impl Default for Frac {

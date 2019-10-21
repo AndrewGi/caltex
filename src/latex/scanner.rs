@@ -30,7 +30,7 @@ pub enum Token<'a> {
 impl Operator {
     pub fn is_operator(c: char) -> bool {
         match c {
-            '+' | '-' | '/' | '*' | '|' | '&' | '%' => true,
+            '+' | '-' | '/' | '*' | '|' | '&' | '%' | '$' => true,
             _ => false
         }
     }
