@@ -6,6 +6,7 @@ pub struct Scanner<'a> {
     chars: Chars<'a>,
 }
 
+pub struct Number
 pub struct Text<'a>(&'a str);
 pub struct Group<'a>(Vec<Token<'a>>);
 pub struct Argument<'a>(Token<'a>);
@@ -24,7 +25,9 @@ pub struct Superscript<'a> {
     script: Token<'a>
 }
 pub enum Token<'a> {
-    Subscript(),
+    Subscript(Subscript<'a>),
+    Superscript(Superscript<'a>),
+    Group(Group<'a>),
     Text(Text<'a>),
 }
 impl Operator {

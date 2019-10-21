@@ -1,10 +1,12 @@
 use crate::math::math::Value;
 use crate::math::num;
 use std::ops::{Add, Mul, Div};
+use crate::latex::scanner::Number;
+
 #[derive(Clone)]
 pub struct Frac {
-	numerator: Box<dyn Value>,
-	denominator: Box<dyn Value>,
+	numerator: Number,
+	denominator: Number,
 }
 
 impl Frac {
