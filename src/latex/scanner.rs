@@ -1,14 +1,15 @@
 use std::ops::Range;
 use std::iter::Scan;
 use std::str::Chars;
+use crate::math::basic_number::BasicNumber;
 
 pub struct Scanner<'a> {
     chars: Chars<'a>,
 }
 
-pub struct Number
 pub struct Text<'a>(&'a str);
-pub struct Group<'a>(Vec<Token<'a>>);
+pub struct Curly<'a>(Vec<Token<'a>>);
+
 pub struct Argument<'a>(Token<'a>);
 pub struct Command<'a> {
     command: &'a str,
@@ -39,6 +40,9 @@ impl Operator {
     }
 }
 impl Scanner {
+    pub fn new<'a>(s: &'a str) -> Scanner {
+        Scanner(s.chars())
+    }
     pub fn peek(&self) -> Option<char> {
         self.chars.clone().next()
     }
@@ -68,6 +72,7 @@ impl<'a> Scanner<'a> {
         Some(Text(&start[..size]))
     }
     pub fn next_command(&mut self) -> Option<Command<'a>> {
+        let backup = self.clone();
         if self.peek()? != '\\' {
             // Missing start '\' before command.
             return None
@@ -78,9 +83,9 @@ impl<'a> Scanner<'a> {
         if self.peek()? == '[' {
             // There are options.
         }
-        let arguments = vec![];
+        let mut arguments = vec![];
         while self.peek()? == '{' {
-            arguments.push(Argument(self.next_group(('{','}'))?));
+            arguments.push(Argument(self.next_group(Some(('{','}')))?));
         }
     }
     pub fn next_group(&mut self, delimiters: Option<(char, char)>) -> Option<Group<'a>> {

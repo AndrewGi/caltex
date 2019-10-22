@@ -2,7 +2,9 @@
 use std::ops::*;
 use std::intrinsics::powf64;
 
-pub trait Number: Add + Sub + Mul + Div + Neg {
+pub trait Number: Add + Sub + Mul + Div + Neg +
+	Clone + Copy +
+	Zero + One {
 
 }
 pub struct Float(f64);
