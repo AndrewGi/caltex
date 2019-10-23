@@ -13,6 +13,9 @@ impl Number for Float {}
 impl Number for Integer {}
 pub trait Zero: Number {
 	fn zero() -> Self;
+	fn is_zero(self) -> bool {
+		self == Self::zero()
+	}
 }
 impl Zero for Float {
 	fn zero() -> Self {

@@ -6,4 +6,5 @@ pub mod frac;
 pub mod expr;
 pub mod trig;
 pub mod algebra;
+pub mod variable;
 pub mod basic_number;
