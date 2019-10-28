@@ -1,4 +1,8 @@
 use frac::Frac;
+use std::str::FromStr;
+use std::num::ParseFloatError;
+use crate::math::basic_number::BasicNumber::Int;
+
 #[derive(Copy, Clone)]
 pub enum BasicNumber {
 	Float(f64),
@@ -17,7 +21,18 @@ impl Default for BasicNumber {
 		BasicNumber::Int(0)
 	}
 }
+impl FromStr for BasicNumber {
+	type Err = ParseFloatError;
 
+	fn from_str(s: &str) -> Result<Self, Self::Err> {
+		match s.parse::<i64>() {
+			Ok(int) => Ok(BasicNumber::Int(int)),
+			Err(_) => {
+				BasicNumber::Float(s.parse::<f64>()?)
+			}
+		}
+	}
+}
 impl std::ops::Add for BasicNumber {
 	type Output = BasicNumber;
 
