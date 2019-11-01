@@ -5,7 +5,6 @@ use crate::math::math::{Variable, Value};
 
 pub struct VariableBank<Num: Number> {
 	variables: HashMap<String, Num>,
-
 }
 impl<Num: Number> VariableBank<Num> {
 	pub fn get_number(&self, var_name: &str) -> Option<Num> {

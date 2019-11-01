@@ -1,38 +1,43 @@
-use crate::math::math::Value;
+use crate::math::math::{Value, GCD};
 use crate::math::num;
 use std::ops::{Add, Mul, Div};
-use crate::latex::scanner::Number;
+use crate::math::num::Number;
 
 #[derive(Clone)]
-pub struct Frac {
-	numerator: Number,
-	denominator: Number,
+pub struct Frac<Num: Number> {
+	numerator: Num,
+	denominator: Num,
 }
 
-impl Frac {
-	pub fn invert(self) -> Frac {
-		Frac(self.denominator, self.numerator)
+impl<Num: Number> Frac<Num> {
+	pub fn new(numerator: Num, denominator: Num) -> Frac<Num> {
+		Frac {
+			numerator,
+			denominator
+		}
+	}
+	pub fn invert(self) -> Frac<Num> {
+		Frac::new(self.denominator, self.numerator)
+	}
+	pub fn simplify(self) -> Frac<Num> where Num: GCD {
+		let gcd = self.numerator.gcd(self.denominator);
+		Frac::new(self.numerator/gcd, self.denominator/gcd)
 	}
 }
-impl Into<Frac> for i64 {
-	fn into(self) -> Frac {
-		Frac(Box::new(num::BasicNumber::Int(self)), Box::new(num::BasicNumber::Int(1i64)))
-	}
-}
-impl Default for Frac {
+impl<Num: Number> Default for Frac<Num> {
 	fn default() -> Self {
 		1.into()
 	}
 }
-impl Mul for Frac {
-	type Output = Frac;
+impl<Num: Number> Mul for Frac<Num> {
+	type Output = Self;
 
 	fn mul(self, rhs: Self) -> Self::Output {
 		Frac (self.numerator * rhs.numerator, self.denominator * rhs.denominator)
 	}
 }
-impl Div for Frac {
-	type Output = Frac;
+impl<Num: Number> Div for Frac<Num> {
+	type Output = Self;
 
 	fn div(self, rhs: Self) -> Self::Output {
 		self * rhs.invert()

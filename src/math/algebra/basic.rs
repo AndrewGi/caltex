@@ -1,6 +1,5 @@
 use crate::math::num::Number;
 use crate::math::math::{Value, Function, MathError};
-use term::terminfo::Error::MalformedTerminfo;
 
 pub struct Adder<Num: Number> {
 	operands: Vec<dyn Value<Num>>,

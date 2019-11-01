@@ -7,6 +7,21 @@ pub enum MathError<'a> {
 	Other(String)
 }
 
+pub trait GCD {
+	fn gcd(self, other: Self) -> Self;
+}
+impl GCD for i64 {
+	fn gcd(self, other: Self) -> Self {
+		let mut a = self;
+		let mut b = other;
+		while b != 0 {
+			let t = b;
+			b = a % b;
+			a = t;
+		}
+		return a;
+	}
+}
 pub trait Value<Num: Number>: Display {
 	/// Returns the Numerically value of the the object or the error if it fails.
 	fn calculate(&self) -> Option<Num>;

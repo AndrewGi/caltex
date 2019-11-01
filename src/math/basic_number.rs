@@ -2,6 +2,7 @@ use frac::Frac;
 use std::str::FromStr;
 use std::num::ParseFloatError;
 use crate::math::basic_number::BasicNumber::Int;
+use std::ops::Neg;
 
 #[derive(Copy, Clone)]
 pub enum BasicNumber {
@@ -73,6 +74,16 @@ impl std::ops::Div for BasicNumber {
 		match (*self, rhs) {
 			(BasicNumber::Int(a), BasicNumber::Int(b)) => BasicNumber::Int(a/b),
 			_ => BasicNumber::Float(f64::from(self) / f64::from(rhs))
+		}
+	}
+}
+impl std::ops::Neg for BasicNumber {
+	type Output = BasicNumber;
+
+	fn neg(self) -> Self::Output {
+		match *self {
+			BasicNumber::Int(i) => BasicNumber::Int(-i),
+			BasicNumber::Float(f) => BasicNumber::Float(-f),
 		}
 	}
 }
