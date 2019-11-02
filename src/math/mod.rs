@@ -7,3 +7,6 @@ pub mod trig;
 pub mod algebra;
 pub mod variable;
 pub mod basic_number;
+
+pub mod scanner;
+pub mod parser;
