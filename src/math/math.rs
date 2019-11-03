@@ -1,5 +1,5 @@
 use crate::math::num::Number;
-use std::fmt::Display;
+use std::fmt::{Display, Formatter};
 
 pub enum MathError<'a> {
 	DivideByZero,
@@ -24,15 +24,23 @@ impl GCD for i64 {
 }
 pub trait Value<Num: Number>: Display {
 	/// Returns the Numerically value of the the object or the error if it fails.
-	fn calculate(&self) -> Option<Num>;
+	fn calculate(&self) -> Result<Num, MathError>;
+	fn is_constant(&self) -> bool;
 	fn is_constant_to(&self, variable_name: &str) -> bool;
 }
 pub struct Constant<Num: Number>(Num);
+impl<Num: Number> Display for Constant<Num> {
+	fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+		write!(f, "{}", self.0)
+	}
+}
 impl<Num: Number> Value<Num> for Constant<Num> {
 	fn calculate(&self) -> Option<Num> {
 		Some(self.0)
 	}
-
+	fn is_constant(&self) -> bool {
+		true
+	}
 
 	fn is_constant_to(&self, variable_name: &str) -> bool {
 		true

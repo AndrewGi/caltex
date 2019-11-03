@@ -1,19 +1,31 @@
 
 use std::ops::*;
-use std::intrinsics::powf64;
+use std::fmt::Display;
 
 pub trait Number: Add + Sub + Mul + Div + Neg +
-	Clone + Copy +
+	Clone + Copy + Display +
 	Zero + One {
 
 }
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default, Hash, Debug)]
 pub struct Float(f64);
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default, Hash, Debug)]
 pub struct Integer(i64);
+impl Display for Float {
+	fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+		write!(f, "{}", self.0)
+	}
+}
+impl Display for Integer {
+	fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+		write!(f, "{}", self.0)
+	}
+}
 impl Number for Float {}
 impl Number for Integer {}
-pub trait Zero: Number {
+pub trait Zero {
 	fn zero() -> Self;
-	fn is_zero(self) -> bool {
+	fn is_zero(&self) -> bool {
 		self == Self::zero()
 	}
 }
@@ -27,7 +39,7 @@ impl Zero for Integer {
 		Integer(0i64)
 	}
 }
-pub trait One: Number {
+pub trait One {
 	fn one() -> Self;
 }
 
@@ -70,5 +82,19 @@ impl Pow for Float {
 impl Pow for Integer {
 	fn pow(self, power: Self) -> Self {
 		Integer(self.0.pow(power.0))
+	}
+}
+
+trait Abs {
+	fn abs(self) -> Self;
+}
+impl Abs for Float {
+	fn abs(self) -> Self {
+		Float(self.0.abs())
+	}
+}
+impl Abs for Integer {
+	fn abs(self) -> Self {
+		Integer(self.0.abs())
 	}
 }

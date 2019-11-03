@@ -1,5 +1,4 @@
 use std::ops::Range;
-use std::iter::Scan;
 use std::str::Chars;
 use crate::math::basic_number::BasicNumber;
 use crate::latex::scanner::Brackets::{Curly, Square};
@@ -55,21 +54,21 @@ impl Operator {
         }
     }
 }
-impl Subscript {
+impl Subscript<'_> {
     pub fn new(script: Token<'_>) -> Subscript<'_> {
         Subscript {
             script
         }
     }
 }
-impl Superscript {
+impl Superscript<'_> {
     pub fn new(script: Token<'_>) -> Superscript<'_> {
         Superscript {
             script
         }
     }
 }
-impl Scanner {
+impl Scanner<'_> {
     pub fn new(s: &str) -> Scanner {
         Self {
             chars: s.chars()

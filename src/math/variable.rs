@@ -18,7 +18,7 @@ pub struct BankVariable<'a, Num: Number> {
 	parent: RefCell<VariableBank<Num>>,
 	name: String,
 }
-impl<Num: Number> Value<Num> for BankVariable<Num> {
+impl<'a, Num: Number> Value<Num> for BankVariable<'a, Num> {
 	fn calculate(&self) -> Option<Num> {
 		self.parent.borrow().get_number(&self.name)
 	}
@@ -27,7 +27,7 @@ impl<Num: Number> Value<Num> for BankVariable<Num> {
 		unimplemented!()
 	}
 }
-impl<Num: Number> Variable<Num> for BankVariable<Num> {
+impl<'a, Num: Number> Variable<Num> for BankVariable<'a, Num> {
 	fn get_name(&self) -> &str {
 		self.name.as_str()
 	}

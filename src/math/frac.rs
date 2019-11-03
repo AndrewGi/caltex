@@ -33,7 +33,7 @@ impl<Num: Number> Mul for Frac<Num> {
 	type Output = Self;
 
 	fn mul(self, rhs: Self) -> Self::Output {
-		Frac (self.numerator * rhs.numerator, self.denominator * rhs.denominator)
+		Frac::new(self.numerator * rhs.numerator, self.denominator * rhs.denominator)
 	}
 }
 impl<Num: Number> Div for Frac<Num> {

@@ -1,10 +1,9 @@
 use crate::math::basic_number::BasicNumber;
-use std::path::Iter;
 use std::str::Chars;
 use std::num::{ParseIntError, ParseFloatError};
-use std::iter::Scan;
 use std::ops::Neg;
 use crate::math::scanner::ScannerError::UnexpectedCharacter;
+use std::convert::TryFrom;
 
 
 pub enum ScannerError<'a> {
@@ -42,32 +41,47 @@ pub enum Token<'a> {
 	Text(Text<'a>),
 	Parentheses(Parentheses<'a>),
 }
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct Scanner<'a> {
 	chars: Chars<'a>
 }
-impl<'a> Iterator<Token<'a>> for Scanner<'a> {
+impl<'a> Iterator for Scanner<'a> {
 	type Item = Token<'a>;
 
 	fn next(&mut self) -> Option<Self::Item> {
 		self.next_token().ok()
 	}
 }
-
+impl<'a> From<&'a str> for Scanner<'a> {
+	fn from(string: &str) -> Self {
+		Self::new(string.chars())
+	}
+}
 impl<'a> Scanner<'a> {
+	pub fn new(c: Chars<'_>) -> Scanner<'_> {
+		Self {
+			chars: c
+		}
+	}
+	pub fn is_done(&self) -> bool {
+		self.len() == 0
+	}
+	pub fn len(&self) -> usize {
+		self.as_str().len()
+	}
 	pub fn peek_char(&self) -> Option<char> {
 		self.clone().next_char()
 	}
 	pub fn as_str(&self) -> &str {
 		self.chars.as_str()
 	}
-	pub fn span_to(&self, other: &Self) -> Option<&str> {
-		let d= self.as_str().as_ptr().wrapping_offset_from(other.as_str().as_ptr());
-		if d < 0 {
-			// Self is a subset of other.
-			return None
-		}
-		Some(&self.as_str()[..d])
+	pub fn span_to(&self, other: &Self) -> Scanner<'a> {
+		let distance_in_bytes= self.as_str().as_ptr().wrapping_offset_from(other.as_str().as_ptr());
+		let u_dist = match usize::try_from(distance_in_bytes) {
+			Ok(i) => i,
+			Err(_) => panic!("scanner self.span_to(other): other is a parent of self"),
+		};
+		&self.as_str()[..u_dist].into()
 	}
 	fn consume_if(&mut self, func: impl Fn(char) -> bool) -> Option<char> {
 		if func(self.peek_char()?) {
@@ -124,12 +138,13 @@ impl<'a> Scanner<'a> {
 		clone.consume_if(|c| c=='(').ok_or(ScannerError::EOL)?;
 		let mut i = 1;
 		while i > 0 {
-			match self.next_char().ok_or(ScannerError::EOL) {
-				'(' => {
-					i += 1;
-				}
+			match clone.next_char().ok_or(ScannerError::EOL)? {
+				'(' => i += 1,
+				')' => i -= 1,
+				_ => ()
 			}
 		}
+		Ok(Parentheses(self.span_to(&clone)))
 	}
 	pub fn next_token(&mut self) -> Result<Token<'a>, ScannerError<'a>> {
 		self.consume_whitespace();
