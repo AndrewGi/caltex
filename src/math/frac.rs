@@ -1,9 +1,9 @@
 use crate::math::math::{Value, GCD};
 use crate::math::num;
 use std::ops::{Add, Mul, Div};
-use crate::math::num::Number;
+use crate::math::num::{Number, One, Zero};
 
-#[derive(Clone)]
+#[derive(Copy, Clone, Eq)]
 pub struct Frac<Num: Number> {
 	numerator: Num,
 	denominator: Num,
@@ -19,14 +19,27 @@ impl<Num: Number> Frac<Num> {
 	pub fn invert(self) -> Frac<Num> {
 		Frac::new(self.denominator, self.numerator)
 	}
-	pub fn simplify(self) -> Frac<Num> where Num: GCD {
+	pub fn simplify(&self) -> Frac<Num> where Num: GCD {
 		let gcd = self.numerator.gcd(self.denominator);
 		Frac::new(self.numerator/gcd, self.denominator/gcd)
 	}
 }
+impl<Num: Number> Zero for Frac<Num> {
+	fn zero() -> Self {
+		Frac::new(Num::zero(), Num::one())
+	}
+	fn is_zero(&self) -> bool {
+		self.numerator.is_zero()
+	}
+}
+impl<Num: Number> One for Frac<Num> {
+	fn one() -> Self {
+		Frac::new(Num::one(), Num::one())
+	}
+}
 impl<Num: Number> Default for Frac<Num> {
 	fn default() -> Self {
-		1.into()
+
 	}
 }
 impl<Num: Number> Mul for Frac<Num> {
