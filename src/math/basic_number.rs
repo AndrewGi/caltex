@@ -1,4 +1,3 @@
-use frac::Frac;
 use std::str::FromStr;
 use std::num::ParseFloatError;
 use crate::math::basic_number::BasicNumber::Int;

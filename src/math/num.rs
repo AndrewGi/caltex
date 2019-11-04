@@ -1,26 +1,46 @@
 
 use std::ops::*;
-use std::intrinsics::powf64;
-use crate::math::basic_number::BasicNumber::Int;
+use std::fmt::Display;
 
 pub trait Number: Add + Sub + Mul + Div + Neg +
 	Clone + Copy +
 	Zero + One {
 
 }
-#[derive(Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default, Hash, Debug)]
 pub struct Float(f64);
-#[derive(Clone, Copy, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default, Hash, Debug)]
 pub struct Integer(i64);
+impl Display for Float {
+	fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+		write!(f, "{}", self.0)
+	}
+}
+impl Display for Integer {
+	fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+		write!(f, "{}", self.0)
+	}
+}
 impl Number for Float {}
 impl Number for Integer {}
 pub trait Zero: Number {
 	fn zero() -> Self;
-	fn is_zero(&self) -> bool {
+	fn is_zero(self) -> bool {
 		self == Self::zero()
 	}
 }
 pub trait One: Number {
+impl Zero for Float {
+	fn zero() -> Self {
+		Float(0f64)
+	}
+}
+impl Zero for Integer {
+	fn zero() -> Self {
+		Integer(0i64)
+	}
+}
+pub trait One {
 	fn one() -> Self;
 	fn is_one(&self) -> bool {
 		self == Self::one()
@@ -152,5 +172,18 @@ impl std::ops::Neg for Integer {
 
 	fn neg(self) -> Self::Output {
 		Integer(-self.0)
+	}
+}
+trait Abs {
+	fn abs(self) -> Self;
+}
+impl Abs for Float {
+	fn abs(self) -> Self {
+		Float(self.0.abs())
+	}
+}
+impl Abs for Integer {
+	fn abs(self) -> Self {
+		Integer(self.0.abs())
 	}
 }
