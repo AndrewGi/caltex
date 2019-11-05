@@ -23,21 +23,10 @@ impl Display for Integer {
 }
 impl Number for Float {}
 impl Number for Integer {}
-pub trait Zero: Number {
+pub trait Zero {
 	fn zero() -> Self;
-	fn is_zero(self) -> bool {
+	fn is_zero(&self) -> bool {
 		self == Self::zero()
-	}
-}
-pub trait One: Number {
-impl Zero for Float {
-	fn zero() -> Self {
-		Float(0f64)
-	}
-}
-impl Zero for Integer {
-	fn zero() -> Self {
-		Integer(0i64)
 	}
 }
 pub trait One {
