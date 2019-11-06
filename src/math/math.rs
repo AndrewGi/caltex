@@ -47,9 +47,27 @@ impl<Num: Number> Value<Num> for Constant<Num> {
 	}
 }
 pub trait Function<Num: Number>: Value<Num> {
-
+	fn get_name(&self) -> &'static str;
 	fn arg_count(&self) -> usize;
 	fn get_arg(&self, arg_i: usize) -> &dyn Value<Num>;
+
+
+	fn are_args_constant(&self) -> bool {
+		for i in 0..self.arg_count() {
+			if !self.get_arg(i).is_constant() {
+				return false;
+			}
+		}
+		true
+	}
+	fn are_args_constant_to(&self, variable_name: &str) -> bool {
+		for i in 0..self.arg_count() {
+			if !self.get_arg(i).is_constant_to(variable_name) {
+				return false;
+			}
+		}
+		true
+	}
 }
 pub trait Variable<Num: Number>: Value<Num> {
 	fn get_name(&self) -> &str;

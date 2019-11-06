@@ -163,7 +163,7 @@ impl std::ops::Neg for Integer {
 		Integer(-self.0)
 	}
 }
-trait Abs {
+pub trait Abs {
 	fn abs(self) -> Self;
 }
 impl Abs for Float {

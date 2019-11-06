@@ -4,26 +4,26 @@ use std::ops::{Add, Mul, Div};
 use crate::math::num::{Number, One, Zero};
 
 #[derive(Copy, Clone, Eq)]
-pub struct Frac<Num: Number + GCD> {
+pub struct Frac<Num: Number> {
 	numerator: Num,
 	denominator: Num,
 }
 impl<Num: Number> From<Num> for Frac<Num> {
     fn from(n: Num) -> Self {
-        Frac::new(n, Frac::one())
+        Frac::new(n, Num::one())
     }
 }
-impl<Num: Number + GCD> Frac<Num> {
+impl<Num: Number> Frac<Num> {
 	pub fn new(numerator: Num, denominator: Num) -> Frac<Num> {
 		Frac {
 			numerator,
 			denominator
 		}
 	}
-	pub fn invert(self) -> Frac<Num> {
+	pub fn invert(&self) -> Frac<Num> {
 		Frac::new(self.denominator, self.numerator)
 	}
-	pub fn simplify(&self) -> Frac<Num>{
+	pub fn simplify(&self) -> Frac<Num> where Num: GCD {
 		let gcd = self.numerator.gcd(self.denominator);
 		Frac::new(self.numerator/gcd, self.denominator/gcd)
 	}
@@ -50,7 +50,7 @@ impl<Num: Number + GCD> Add for Frac<Num> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        self.numerator *
+        Frac::new(self.numerator * rhs.denominator + rhs.numerator * self.denominator, self.denominator*rhs.denominator).simplify()
     }
 }
 impl<Num: Number + GCD> Mul for Frac<Num> {

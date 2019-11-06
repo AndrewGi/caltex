@@ -1,18 +1,38 @@
-use crate::math::math::{Value, MathError};
-use crate::math::num::Number;
+use crate::math::math::{Value, MathError, GCD};
+use crate::math::num::{Number, Abs};
+use std::fmt::{Display, Formatter, Error};
 
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum BinaryOperator {
     Addition,
     Subtraction,
     Multiplication,
     Division,
 }
-
+impl BinaryOperator {
+    fn as_char(self) -> char {
+        match self {
+            BinaryOperator::Addition => '+',
+            BinaryOperator::Subtraction => '-',
+            BinaryOperator::Multiplication => '*',
+            BinaryOperator::Division => '/'
+        }
+    }
+}
+impl Display for BinaryOperator {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        write!(f, "{}", self.as_char())
+    }
+}
 pub struct BinaryExpression<Num: Number> {
     left: Box<dyn Value<Num>>,
     right: Box<dyn Value<Num>>,
     operator: BinaryOperator
+}
+impl<Num: Number> Display for BinaryExpression<Num> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        write!(f, "{} {} {}", self.left, self.operator, self.right)
+    }
 }
 impl<Num: Number> Value<Num> for BinaryExpression<Num> {
     fn calculate(&self) -> Result<Num, MathError> {
@@ -42,20 +62,20 @@ pub struct UnaryOperation<Num: Number> {
     operator: UnaryOperator,
     operand: Box<dyn Value<Num>>
 }
-impl<Num: Number> Value<Num> for UnaryOperation<Num> {
+impl<Num: Number+Abs> Value<Num> for UnaryOperation<Num> {
     fn calculate(&self) -> Result<Num, MathError> {
         let v = self.operand.calculate()?;
         match self.operator {
             UnaryOperator::Negate => Ok(v.neg()),
-
+            UnaryOperator::Absolute => Ok(v.abs())
         }
     }
 
     fn is_constant(&self) -> bool {
-        unimplemented!()
+        self.operand.is_constant()
     }
 
     fn is_constant_to(&self, variable_name: &str) -> bool {
-        unimplemented!()
+        self.operand.is_constant_to(variable_name)
     }
 }
