@@ -1,9 +1,10 @@
 use crate::math::math::{Value, GCD};
 use crate::math::num;
-use std::ops::{Add, Mul, Div};
+use std::ops::{Add, Mul, Div, Sub};
 use crate::math::num::{Number, One, Zero};
+use std::fmt::{Display, Formatter, Error};
 
-#[derive(Copy, Clone, Eq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub struct Frac<Num: Number> {
 	numerator: Num,
 	denominator: Num,
@@ -26,6 +27,14 @@ impl<Num: Number> Frac<Num> {
 	pub fn simplify(&self) -> Frac<Num> where Num: GCD {
 		let gcd = self.numerator.gcd(self.denominator);
 		Frac::new(self.numerator/gcd, self.denominator/gcd)
+	}
+}
+impl<Num: Number> Number for Frac<Num> {
+
+}
+impl<Num: Number> Display for Frac<Num> {
+	fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+		write!(f, "{}/{}", self.numerator, self.denominator)
 	}
 }
 impl<Num: Number> Zero for Frac<Num> {
@@ -52,6 +61,13 @@ impl<Num: Number + GCD> Add for Frac<Num> {
     fn add(self, rhs: Self) -> Self::Output {
         Frac::new(self.numerator * rhs.denominator + rhs.numerator * self.denominator, self.denominator*rhs.denominator).simplify()
     }
+}
+impl<Num: Number + GCD> Sub for Frac<Num> {
+	type Output = Self;
+
+	fn sub(self, rhs: Self) -> Self::Output {
+
+	}
 }
 impl<Num: Number + GCD> Mul for Frac<Num> {
 	type Output = Self;

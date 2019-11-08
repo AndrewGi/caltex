@@ -3,13 +3,15 @@ use std::ops::*;
 use std::fmt::Display;
 
 pub trait Number: Add + Sub + Mul + Div + Neg +
-	Clone + Copy +
-	Zero + One {
+	Clone + Copy + Sized +
+	PartialOrd + PartialEq +
+	Display +
+	{
 
 }
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default, Hash, Debug)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, Default, Debug)]
 pub struct Float(f64);
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Default, Hash, Debug)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, Default, Hash, Debug)]
 pub struct Integer(i64);
 impl Display for Float {
 	fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
@@ -23,16 +25,16 @@ impl Display for Integer {
 }
 impl Number for Float {}
 impl Number for Integer {}
-pub trait Zero {
+pub trait Zero: Number {
 	fn zero() -> Self;
 	fn is_zero(&self) -> bool {
-		self == Self::zero()
+		self == &Self::zero()
 	}
 }
-pub trait One {
+pub trait One: Number {
 	fn one() -> Self;
 	fn is_one(&self) -> bool {
-		self == Self::one()
+		self == &Self::one()
 	}
 }
 pub trait Pow: Number {

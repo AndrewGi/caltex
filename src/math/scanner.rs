@@ -5,8 +5,8 @@ use std::ops::Neg;
 use crate::math::scanner::ScannerError::UnexpectedCharacter;
 use std::convert::TryFrom;
 
-
-pub enum ScannerError<'a> {
+#[derive(Clone, Debug)]
+pub enum ScannerError {
 	EOL,
 	UnexpectedCharacter(char),
 	ParseIntError(ParseIntError),
@@ -93,7 +93,7 @@ impl<'a> Scanner<'a> {
 	pub fn next_char(&mut self) -> Option<char> {
 		self.chars.next()
 	}
-	pub fn next_number(&mut self) -> Result<Number, ScannerError<'a>> {
+	pub fn next_number(&mut self) -> Result<Number, ScannerError> {
 		let mut cloned = self.clone();
 		let is_neg = cloned.consume_if(|c| c=='-').is_some();
 		while cloned.consume_if(char::is_numeric).is_some() {}
@@ -133,7 +133,7 @@ impl<'a> Scanner<'a> {
 			Err(UnexpectedCharacter(c))
 		}
 	}
-	fn next_parentheses(&mut self) -> Result<Parentheses<'a>, ScannerError<'a>> {
+	fn next_parentheses(&mut self) -> Result<Parentheses<'a>, ScannerError> {
 		let mut clone = self.clone();
 		clone.consume_if(|c| c=='(').ok_or(ScannerError::EOL)?;
 		let mut i = 1;
@@ -146,7 +146,7 @@ impl<'a> Scanner<'a> {
 		}
 		Ok(Parentheses(self.span_to(&clone)))
 	}
-	pub fn next_token(&mut self) -> Result<Token<'a>, ScannerError<'a>> {
+	pub fn next_token(&mut self) -> Result<Token<'a>, ScannerError> {
 		self.consume_whitespace();
 		let mut clone = self.clone();
 		Ok(match self.peek_char().ok_or(ScannerError::EOL)? {

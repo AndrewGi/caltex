@@ -79,3 +79,11 @@ impl<Num: Number+Abs> Value<Num> for UnaryOperation<Num> {
         self.operand.is_constant_to(variable_name)
     }
 }
+impl<Num: Number> Display for UnaryOperation<Num> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        match self.operator {
+            UnaryOperator::Negate => write!(f, "-{}", self.operand),
+            UnaryOperator::Absolute => write!(f, "|{}|", self.operand)
+        }
+    }
+}

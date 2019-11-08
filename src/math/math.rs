@@ -22,7 +22,7 @@ impl GCD for i64 {
 		return a;
 	}
 }
-pub trait Value<Num: Number>: Display {
+pub trait Value<Num: Number> {
 	/// Returns the Numerically value of the the object or the error if it fails.
 	fn calculate(&self) -> Result<Num, MathError>;
 	fn is_constant(&self) -> bool;
@@ -35,8 +35,8 @@ impl<Num: Number> Display for Constant<Num> {
 	}
 }
 impl<Num: Number> Value<Num> for Constant<Num> {
-	fn calculate(&self) -> Option<Num> {
-		Some(self.0)
+	fn calculate(&self) -> Result<Num, MathError> {
+		Ok(self.0)
 	}
 	fn is_constant(&self) -> bool {
 		true

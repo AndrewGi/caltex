@@ -3,7 +3,7 @@ use std::num::ParseFloatError;
 use crate::math::basic_number::BasicNumber::Int;
 use std::ops::Neg;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialOrd, PartialEq)]
 pub enum BasicNumber {
 	Float(f64),
 	Int(i64),

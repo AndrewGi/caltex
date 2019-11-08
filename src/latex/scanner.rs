@@ -29,13 +29,13 @@ pub struct Command<'a> {
 pub struct Operator(char);
 pub struct Script<'a> {
     c: char,
-    script: Token<'a>
+    script: Box<Token<'a>>
 }
 pub struct Subscript<'a> {
-    script: Token<'a>
+    script: Box<Token<'a>>
 }
 pub struct Superscript<'a> {
-    script: Token<'a>
+    script: Box<Token<'a>>
 }
 pub enum Token<'a> {
     Command(Command<'a>),
@@ -55,14 +55,14 @@ impl Operator {
     }
 }
 impl Subscript<'_> {
-    pub fn new(script: Token<'_>) -> Subscript<'_> {
+    pub fn new(script: Box<Token<'_>>) -> Subscript<'_> {
         Subscript {
             script
         }
     }
 }
 impl Superscript<'_> {
-    pub fn new(script: Token<'_>) -> Superscript<'_> {
+    pub fn new(script: Box<Token<'_>>) -> Superscript<'_> {
         Superscript {
             script
         }
@@ -125,7 +125,7 @@ impl<'a> Scanner<'a> {
             self.next().unwrap(); // Consume '_' or '^'
             Some(Script {
                 c: script_char,
-                script: self.next_token()?
+                script: Box::new(self.next_token()?)
             })
         } else {
             None
