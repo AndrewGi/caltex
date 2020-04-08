@@ -1,5 +1,5 @@
-use std::ops::Range;
-use std::str::Chars;
+
+use core::str::Chars;
 use crate::math::basic_number::BasicNumber;
 use crate::latex::scanner::Brackets::{Curly, Square};
 
@@ -204,9 +204,6 @@ impl<'a> Scanner<'a> {
             superscript: super_script,
             brackets: brackets
         })
-    }
-    pub fn next_escaped(&mut self) -> Option<Escaped> {
-        
     }
     pub fn all_to_group(&mut self) -> Option<Group<'a>> {
         if self.peek()?.is_whitespace() {

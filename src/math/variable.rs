@@ -10,7 +10,7 @@ pub struct VariableBank<Num: Number> {
 }
 impl<Num: Number> VariableBank<Num> {
 	pub fn get_number(&self, var_name: &str) -> Option<Num> {
-		self.variables.get(var_name)
+		self.variables.get(var_name).map(|n| *n)
 	}
 	pub fn contains(&self, var_name: &str) -> bool {
 		self.variables.contains_key(var_name)
@@ -31,7 +31,7 @@ impl<'a, Num: Number> Value<Num> for BankVariable<'a, Num> {
 	}
 
 	fn is_constant_to(&self, variable_name: &str) -> bool {
-		!self.name.as_str() == variable_name
+		self.name.as_str() != variable_name
 	}
 }
 impl<'a, Num: Number> Variable<Num> for BankVariable<'a, Num> {

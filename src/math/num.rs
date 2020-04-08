@@ -1,9 +1,10 @@
 
-use std::ops::*;
-use std::fmt::Display;
+use core::ops::*;
+use core::fmt::Display;
+use core::convert::TryInto;
 
-pub trait Number: Add + Sub + Mul + Div + Neg +
-	Clone + Copy + Sized +
+pub trait Number: Add<Output=Self> + Sub<Output=Self> + Mul<Output=Self> + Div<Output=Self> +
+	Neg<Output=Self> +	Clone + Copy + Sized +
 	PartialOrd + PartialEq +
 	Display +
 	{
@@ -14,26 +15,26 @@ pub struct Float(f64);
 #[derive(Copy, Clone, PartialEq, PartialOrd, Default, Hash, Debug)]
 pub struct Integer(i64);
 impl Display for Float {
-	fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+	fn fmt(&self, f: &mut core::fmt::Formatter) -> Result<(), core::fmt::Error> {
 		write!(f, "{}", self.0)
 	}
 }
 impl Display for Integer {
-	fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+	fn fmt(&self, f: &mut core::fmt::Formatter) -> Result<(), core::fmt::Error> {
 		write!(f, "{}", self.0)
 	}
 }
 impl Number for Float {}
 impl Number for Integer {}
-pub trait Zero: Number {
+pub trait Zero {
 	fn zero() -> Self;
-	fn is_zero(&self) -> bool {
+	fn is_zero(&self) -> bool where Self: PartialEq + Sized {
 		self == &Self::zero()
 	}
 }
-pub trait One: Number {
+pub trait One {
 	fn one() -> Self;
-	fn is_one(&self) -> bool {
+	fn is_one(&self) -> bool where Self: PartialEq + Sized {
 		self == &Self::one()
 	}
 }
@@ -66,7 +67,7 @@ impl Pow for Float {
 }
 impl Pow for Integer {
 	fn pow(self, power: Self) -> Self {
-		Integer(self.0.pow(power.0))
+		Integer(self.0.pow(power.0.try_into().unwrap_or(0u32)))
 	}
 }
 
@@ -93,35 +94,35 @@ impl One for Integer {
 }
 
 
-impl std::ops::Add for Float {
+impl core::ops::Add for Float {
 	type Output = Float;
 
 	fn add(self, rhs: Self) -> Self::Output {
 		Float(self.0 + rhs.0)
 	}
 }
-impl std::ops::Sub for Float {
+impl core::ops::Sub for Float {
 	type Output = Float;
 
 	fn sub(self, rhs: Self) -> Self::Output {
 		Float(self.0 - rhs.0)
 	}
 }
-impl std::ops::Mul for Float {
+impl core::ops::Mul for Float {
 	type Output = Float;
 
 	fn mul(self, rhs: Self) -> Self::Output {
 		Float(self.0 * rhs.0)
 	}
 }
-impl std::ops::Div for Float {
+impl core::ops::Div for Float {
 	type Output = Float;
 
 	fn div(self, rhs: Self) -> Self::Output {
 		Float(self.0 / rhs.0)
 	}
 }
-impl std::ops::Neg for Float {
+impl core::ops::Neg for Float {
 	type Output = Float;
 
 	fn neg(self) -> Self::Output {
@@ -130,35 +131,35 @@ impl std::ops::Neg for Float {
 }
 
 
-impl std::ops::Add for Integer {
+impl core::ops::Add for Integer {
 	type Output = Integer;
 
 	fn add(self, rhs: Self) -> Self::Output {
 		Integer(self.0 + rhs.0)
 	}
 }
-impl std::ops::Sub for Integer {
+impl core::ops::Sub for Integer {
 	type Output = Integer;
 
 	fn sub(self, rhs: Self) -> Self::Output {
 		Integer(self.0 - rhs.0)
 	}
 }
-impl std::ops::Mul for Integer {
+impl core::ops::Mul for Integer {
 	type Output = Integer;
 
 	fn mul(self, rhs: Self) -> Self::Output {
 		Integer(self.0 * rhs.0)
 	}
 }
-impl std::ops::Div for Integer {
+impl core::ops::Div for Integer {
 	type Output = Integer;
 
 	fn div(self, rhs: Self) -> Self::Output {
 		Integer(self.0 / rhs.0)
 	}
 }
-impl std::ops::Neg for Integer {
+impl core::ops::Neg for Integer {
 	type Output = Integer;
 
 	fn neg(self) -> Self::Output {

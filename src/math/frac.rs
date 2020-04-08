@@ -1,15 +1,14 @@
-use crate::math::math::{Value, GCD};
-use crate::math::num;
-use std::ops::{Add, Mul, Div, Sub};
+use crate::math::math::{ GCD};
+use std::ops::{Add, Mul, Div, Sub, Neg};
 use crate::math::num::{Number, One, Zero};
 use std::fmt::{Display, Formatter, Error};
 
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Copy, Clone, PartialEq, PartialOrd)]
 pub struct Frac<Num: Number> {
 	numerator: Num,
 	denominator: Num,
 }
-impl<Num: Number> From<Num> for Frac<Num> {
+impl<Num: Number + One> From<Num> for Frac<Num> {
     fn from(n: Num) -> Self {
         Frac::new(n, Num::one())
     }
@@ -29,7 +28,7 @@ impl<Num: Number> Frac<Num> {
 		Frac::new(self.numerator/gcd, self.denominator/gcd)
 	}
 }
-impl<Num: Number> Number for Frac<Num> {
+impl<Num: Number + GCD> Number for Frac<Num> {
 
 }
 impl<Num: Number> Display for Frac<Num> {
@@ -37,7 +36,7 @@ impl<Num: Number> Display for Frac<Num> {
 		write!(f, "{}/{}", self.numerator, self.denominator)
 	}
 }
-impl<Num: Number> Zero for Frac<Num> {
+impl<Num: Number + Zero + One> Zero for Frac<Num> {
 	fn zero() -> Self {
 		Frac::new(Num::zero(), Num::one())
 	}
@@ -45,12 +44,12 @@ impl<Num: Number> Zero for Frac<Num> {
 		self.numerator.is_zero()
 	}
 }
-impl<Num: Number> One for Frac<Num> {
+impl<Num: Number + One> One for Frac<Num> {
 	fn one() -> Self {
 		Frac::new(Num::one(), Num::one())
 	}
 }
-impl<Num: Number> Default for Frac<Num> {
+impl<Num: Number + One> Default for Frac<Num> {
 	fn default() -> Self {
         Frac::one()
 	}
@@ -66,7 +65,7 @@ impl<Num: Number + GCD> Sub for Frac<Num> {
 	type Output = Self;
 
 	fn sub(self, rhs: Self) -> Self::Output {
-
+		Frac::new(self.numerator * rhs.denominator - rhs.numerator * self.denominator, self.denominator*rhs.denominator).simplify()
 	}
 }
 impl<Num: Number + GCD> Mul for Frac<Num> {
@@ -76,10 +75,17 @@ impl<Num: Number + GCD> Mul for Frac<Num> {
 		Frac::new(self.numerator * rhs.numerator, self.denominator * rhs.denominator).simplify()
 	}
 }
-impl<Num: Number> Div for Frac<Num> {
+impl<Num: Number + GCD> Div for Frac<Num> {
 	type Output = Self;
 
 	fn div(self, rhs: Self) -> Self::Output {
 		self * rhs.invert()
+	}
+}
+impl<Num: Number> Neg for Frac<Num> {
+	type Output = Self;
+
+	fn neg(self) -> Self::Output {
+		Frac::new(self.numerator.neg(), self.denominator)
 	}
 }

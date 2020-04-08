@@ -1,3 +1,4 @@
-mod math;
-mod latex;
-mod dimyst;
+pub mod math;
+pub mod scanner;
+//pub mod latex;
+//pub mod dimyst;

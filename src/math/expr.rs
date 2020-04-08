@@ -29,7 +29,7 @@ pub struct BinaryExpression<Num: Number> {
     right: Box<dyn Value<Num>>,
     operator: BinaryOperator
 }
-impl<Num: Number> Display for BinaryExpression<Num> {
+impl<Num: Number + Display> Display for BinaryExpression<Num> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         write!(f, "{} {} {}", self.left, self.operator, self.right)
     }
