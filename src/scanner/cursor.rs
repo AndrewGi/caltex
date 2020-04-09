@@ -1,7 +1,7 @@
 use crate::scanner::error;
 use core::str::Chars;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Cursor<'a> {
     s: Chars<'a>,
 }
@@ -14,6 +14,9 @@ impl<'a> Cursor<'a> {
             self.next_char()?;
         }
         Ok(())
+    }
+    pub fn is_empty(&self) -> bool {
+        self.s.clone().next().is_none()
     }
     pub fn byte_offset(&self, second: &Self) -> usize {
         second.s.as_str().as_ptr() as usize - self.s.as_str().as_ptr() as usize

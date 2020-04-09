@@ -1,5 +1,5 @@
 pub struct EOLError(pub ());
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum Error {
     InvalidState,
     EOL,

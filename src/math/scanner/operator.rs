@@ -3,6 +3,7 @@ use crate::scanner::{error, Scannable};
 
 pub struct InvalidOperatorError(());
 
+#[derive(Clone, Ord, PartialOrd, Eq, PartialEq, Debug, Hash)]
 pub enum BinaryOperator {
     Plus,
     Minus,
@@ -29,6 +30,7 @@ impl Scannable for BinaryOperator {
     }
 }
 
+#[derive(Clone, Ord, PartialOrd, Eq, PartialEq, Debug, Hash)]
 pub enum UnaryOperator {
     Plus,
     Minus,

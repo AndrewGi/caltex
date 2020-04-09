@@ -1,6 +1,6 @@
-use crate::math::math::{Value, MathError, GCD};
-use crate::math::num::{Number, Abs};
-use std::fmt::{Display, Formatter, Error};
+use crate::math::math::{MathError, Value};
+use crate::math::num::{Abs, Number};
+use core::fmt::{Display, Error, Formatter};
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum BinaryOperator {
@@ -15,7 +15,7 @@ impl BinaryOperator {
             BinaryOperator::Addition => '+',
             BinaryOperator::Subtraction => '-',
             BinaryOperator::Multiplication => '*',
-            BinaryOperator::Division => '/'
+            BinaryOperator::Division => '/',
         }
     }
 }
@@ -27,7 +27,7 @@ impl Display for BinaryOperator {
 pub struct BinaryExpression<Num: Number> {
     left: Box<dyn Value<Num>>,
     right: Box<dyn Value<Num>>,
-    operator: BinaryOperator
+    operator: BinaryOperator,
 }
 impl<Num: Number + Display> Display for BinaryExpression<Num> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
@@ -60,14 +60,14 @@ pub enum UnaryOperator {
 }
 pub struct UnaryOperation<Num: Number> {
     operator: UnaryOperator,
-    operand: Box<dyn Value<Num>>
+    operand: Box<dyn Value<Num>>,
 }
-impl<Num: Number+Abs> Value<Num> for UnaryOperation<Num> {
+impl<Num: Number + Abs> Value<Num> for UnaryOperation<Num> {
     fn calculate(&self) -> Result<Num, MathError> {
         let v = self.operand.calculate()?;
         match self.operator {
             UnaryOperator::Negate => Ok(v.neg()),
-            UnaryOperator::Absolute => Ok(v.abs())
+            UnaryOperator::Absolute => Ok(v.abs()),
         }
     }
 
@@ -83,7 +83,7 @@ impl<Num: Number> Display for UnaryOperation<Num> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         match self.operator {
             UnaryOperator::Negate => write!(f, "-{}", self.operand),
-            UnaryOperator::Absolute => write!(f, "|{}|", self.operand)
+            UnaryOperator::Absolute => write!(f, "|{}|", self.operand),
         }
     }
 }
